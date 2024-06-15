@@ -15,8 +15,21 @@ After the project is build, the next step is to build the docker image:
 docker build -t text-analyzer-image .
 ```
 
-To run the built docker image run:
+To run the built docker image seperately run:
 ```console
-docker run --name text-analyzer-container -p 8080:8080 text-analyzer-image
+docker run --name text-analyzer-backend-container -p 8080:8080 text-analyzer-image
 ```
-s
+
+## Frontend
+The frontend of the text analyzer application is an angular application. To build a docker image of the component, run the following command in the /fronent/text-analyzer-angular/ folder:
+```console
+docker build -t text-analyzer-angular-image .
+```
+
+To run the built docker image seperately run:
+```console
+docker run --name text-analyzer-frontend-container -p 4201:4200 text-analyzer-angular-image
+```
+
+
+## Docker Compose
