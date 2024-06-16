@@ -4,13 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AnalysisResult {
-     private Map<String, Object> textAnalysis = new HashMap<>();
+    private Map<String, Integer> textAnalysis = new HashMap<>();
 
-    public Map<String, Object> getData() {
+    public AnalysisResult(Map<String, Integer> textAnalysis) {
+        this.textAnalysis = textAnalysis;
+    }
+
+    public Map<String, Integer> getData() {
         return textAnalysis;
     }
 
-    public void setData(Map<String, Object> data) {
+    public void setData(Map<String, Integer> data) {
         this.textAnalysis = data;
     }
 }
