@@ -11,6 +11,9 @@ import {MatButtonModule} from '@angular/material/button';
 import {merge} from 'rxjs';
 import { TextAnalyzerService } from './text-analyzer.service';
 import { NgFor } from '@angular/common';
+import { TextAnalyzerBackendService } from '../core/services/text-analyzer-backend.service';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpService } from '../core/services/http.service';
 
 
 
@@ -37,7 +40,9 @@ export class TextAnalyzerComponent {
 
   results = new Map<string, number>();
 
-  constructor(private textAnalyzerService: TextAnalyzerService) {}
+  constructor(private textAnalyzerService: TextAnalyzerService, 
+              private textAnalyzerBackendService: TextAnalyzerBackendService
+  ) {}
 
 
   updateErrorMessage() {
@@ -65,17 +70,22 @@ export class TextAnalyzerComponent {
   }
 
   analyzeText(){
-    console.log("Analyzing text...")
-    this.results = this.textAnalyzerService.analyzeText(this.control.value ?? "", this.isCheckedParameter);
-    console.log("Text analyzed!")
 
-    for(let [key, value] of this.results){
-      console.log(key + " " + value);
+    if(this.isCheckedLocal){
+      console.log("Analyzing text at the backend...")
+
+      this.textAnalyzerBackendService.analyzeTextAtBackend(this.control.value ?? "", this.isCheckedParameter).subscribe(result => {
+        this.results = new Map(Object.entries(result.data));
+      })
+
+    }else{
+      console.log("Analyzing text locally...")
+      this.results = this.textAnalyzerService.analyzeText(this.control.value ?? "", this.isCheckedParameter);
     }
+
   }
 
   getKeys(map: Map<string, number>){
     return Array.from(map.keys());
-}
-
+  }
 }
