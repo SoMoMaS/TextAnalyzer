@@ -2,16 +2,12 @@ version: '3'
 name: text-analyzer
 services:
     text-analyzer-backend:
-        build:
-              context: ./backend/text-analyzer/
-              dockerfile: Dockerfile
+        image: somapp/text-analyzer-backend:latest
         restart: on-failure
         ports:
             - '8080:8080'
     text-analyzer-frontend:
-        build:
-            context: ./frontend/text-analyzer-angular/
-            dockerfile: Dockerfile
+        image: somapp/text-analyzer-frontend:latest
         restart: on-failure
         ports:
             - '4200:4200'
