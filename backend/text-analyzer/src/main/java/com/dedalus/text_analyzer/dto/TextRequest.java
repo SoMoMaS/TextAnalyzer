@@ -8,8 +8,16 @@ public class TextRequest {
         return text;
     }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
     public Boolean getIsVowels() {
         return isVowels;
+    }
+
+    public void setIsVowels(Boolean isVowels) {
+        this.isVowels = isVowels;
     }
 
 }

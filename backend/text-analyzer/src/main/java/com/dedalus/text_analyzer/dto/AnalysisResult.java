@@ -6,6 +6,10 @@ import java.util.Map;
 public class AnalysisResult {
     private Map<String, Integer> textAnalysis = new HashMap<>();
 
+    public AnalysisResult() {
+        super();
+    }
+
     public AnalysisResult(Map<String, Integer> textAnalysis) {
         this.textAnalysis = textAnalysis;
     }
