@@ -7,46 +7,46 @@ export class TextAnalyzerService {
 
   private characterOccurences: Map<string, number> = new Map<string, number>();
 
-  private vowels: Map<string, number> = new Map([
-    ['a', 0],
-    ['e', 0],
-    ['i', 0],
-    ['o', 0],
-    ['u', 0]
-  ]);
+  private vowels: string[] = ['a', 'e', 'i', 'o', 'u'];
 
   constructor() { }
 
   
 
   analyzeText(text: string, isVowels: boolean): Map<string, number> {
-    this.reset();
-    
+
     if (isVowels) {
-      return this.countVowels(text);
+      return this.countVowels(text.toLowerCase());
     } else {
-      return this.countConsonants(text);
+      return this.countConsonants(text.toLowerCase());
     }
   }
 
   countVowels(text: string): Map<string, number> {
+    this.characterOccurences = new Map<string, number>();
     for(let char of text){
-      if(this.vowels.has(char)){
-        this.vowels.set(char, (this.vowels.get(char) ?? 0) + 1);
+      if(this.vowels.includes(char.toLowerCase()) && this.isEnglishAlphabetLetter(char)){
+
+        if(this.characterOccurences.has(char.toLowerCase())){
+          this.characterOccurences.set(char.toLowerCase(), (this.characterOccurences.get(char.toLowerCase()) ?? 0)+ 1);
+        } else {
+          this.characterOccurences.set(char.toLowerCase(), 1);
+        }
       }
     }
 
-    return this.vowels;
+    return this.characterOccurences;
   }
 
   countConsonants(text: string): Map<string, number> {
+    this.characterOccurences = new Map<string, number>();
     for(let char of text){
-      if(!this.vowels.has(char)){
+      if(!this.vowels.includes(char.toLowerCase()) && this.isEnglishAlphabetLetter(char)){
 
-        if(this.characterOccurences.has(char)){
-          this.characterOccurences.set(char, (this.characterOccurences.get(char) ?? 0)+ 1);
+        if(this.characterOccurences.has(char.toLowerCase())){
+          this.characterOccurences.set(char.toLowerCase(), (this.characterOccurences.get(char.toLowerCase()) ?? 0)+ 1);
         } else {
-          this.characterOccurences.set(char, 1);
+          this.characterOccurences.set(char.toLowerCase(), 1);
         }
       }
     }
@@ -54,16 +54,7 @@ export class TextAnalyzerService {
     return this.characterOccurences
   }
 
-  reset(){
-    this.vowels = new Map([
-      ['a', 0],
-      ['e', 0],
-      ['i', 0],
-      ['o', 0],
-      ['u', 0]
-    ]);
-
-    this.characterOccurences = new Map<string, number>();
+  isEnglishAlphabetLetter(char: string): boolean {
+    return /^[a-zA-Z]$/.test(char);
   }
-
 }
