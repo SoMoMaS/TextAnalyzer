@@ -14,20 +14,50 @@ import { NgFor } from '@angular/common';
 import { TextAnalyzerBackendService } from '../core/services/text-analyzer-backend.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpService } from '../core/services/http.service';
+import {MatSelectModule} from '@angular/material/select';
+import {MatTableModule} from '@angular/material/table';
 
 
+export interface LetterCount{
+  letter: string;
+  count: number;
+}
 
 @Component({
   selector: 'app-text-analyzer',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, FormsModule, ReactiveFormsModule, MatSlideToggleModule, MatCardModule, MatListModule, MatButtonModule, NgFor],
+  imports: [MatFormFieldModule, MatInputModule, FormsModule, ReactiveFormsModule, MatSlideToggleModule, MatCardModule, MatListModule, MatButtonModule, NgFor, MatSelectModule, MatTableModule],
   templateUrl: './text-analyzer.component.html',
   styleUrl: './text-analyzer.component.css'
 })
 export class TextAnalyzerComponent {
-  //emailFormControl = new FormControl('', [Validators.required, Validators.email]);
+
   readonly control = new FormControl('', [Validators.pattern('^[A-Za-z]*$'), Validators.required]);
   errorMessage = signal('');
+
+  displayedColumns: string[] = ['Letter', 'Count'];
+
+
+  protected readonly value = signal('');
+  protected onInput(event: Event) {
+    this.value.set((event.target as HTMLInputElement).value);
+  }
+
+  executionOptions = [
+    { value: 'Online', viewValue: 'Online' },
+    { value: 'Offline', viewValue: 'Offline' },
+  ];
+
+  selectedExecutionOption: string = "Online"
+
+  analysisOptions = [
+    { value: 'Vowels', viewValue: 'Vowels' },
+    { value: 'Consonants', viewValue: 'Consonants' },
+  ];
+
+  selectedAnalysisOption: string = "Vowels"
+
+  dataSource: LetterCount[] = []
 
   color: ThemePalette = 'accent';
   isCheckedLocal = false;
@@ -70,22 +100,34 @@ export class TextAnalyzerComponent {
   }
 
   analyzeText(){
+    let isOnline = this.selectedExecutionOption == "Online" ? true: false
+    let isVowels = this.selectedAnalysisOption == "Vowels" ? true: false
+    console.log(this.control.value)
+    if(isOnline){
+      console.log("Analyzing text at the backend..." + this.selectedAnalysisOption)
 
-    if(this.isCheckedLocal){
-      console.log("Analyzing text at the backend...")
-
-      this.textAnalyzerBackendService.analyzeTextAtBackend(this.control.value ?? "", this.isCheckedParameter).subscribe(result => {
+      this.textAnalyzerBackendService.analyzeTextAtBackend(this.control.value ?? "", isVowels).subscribe(result => {
         this.results = new Map(Object.entries(result.data));
+        this.dataSource = this.getLetterCountArray(this.results);
       })
 
     }else{
-      console.log("Analyzing text locally...")
-      this.results = this.textAnalyzerService.analyzeText(this.control.value ?? "", this.isCheckedParameter);
+      console.log("Analyzing text locally..." + this.selectedAnalysisOption)
+      this.results = this.textAnalyzerService.analyzeText(this.control.value ?? "", isVowels);
+      this.dataSource = this.getLetterCountArray(this.results);
     }
-
   }
 
   getKeys(map: Map<string, number>){
     return Array.from(map.keys());
+  }
+
+  getLetterCountArray(map: Map<string, number>): LetterCount[]{
+    let letterCountArray: LetterCount[] = [];
+    for(let [key, value] of map){
+      letterCountArray.push({letter: key, count: value});
+    }
+
+    return letterCountArray;
   }
 }
