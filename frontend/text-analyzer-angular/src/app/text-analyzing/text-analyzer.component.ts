@@ -65,9 +65,6 @@ export class TextAnalyzerComponent {
 
   isCheckedParameter = false;
 
-  textLocal = this.isCheckedLocal ? 'Online' : 'Offline';
-  textParameter = this.isCheckedParameter ? 'Vowels' : 'Consonants';
-
   results = new Map<string, number>();
 
   constructor(private textAnalyzerService: TextAnalyzerService, 
@@ -85,18 +82,6 @@ export class TextAnalyzerComponent {
     } else {
       this.isDisabled = false;
     }
-
-    
-  }
-
-  updateLocalozationToggle($event: MatSlideToggleChange){
-    this.isCheckedLocal = $event.checked;
-    this.textLocal = (this.isCheckedLocal) ? 'Online' : 'Offline';
-  }
-
-  updateParameterToggle($event: MatSlideToggleChange){
-    this.isCheckedParameter = $event.checked;
-    this.textParameter = this.isCheckedParameter ? 'Vowels' : 'Consonants';
   }
 
   analyzeText(){
